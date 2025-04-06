@@ -17,7 +17,7 @@ const Hero: React.FC = () => {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Button asChild size="lg" className="bg-gradient-to-r from-cura-primary to-cura-secondary hover:opacity-90 transition-opacity">
-                <Link to="/chat">
+                <Link to="/auth">
                   Start Health Chat
                 </Link>
               </Button>

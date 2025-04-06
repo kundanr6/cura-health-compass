@@ -8,23 +8,18 @@ const CTA: React.FC = () => {
     <section className="py-16 px-4">
       <div className="max-w-5xl mx-auto rounded-2xl bg-gradient-to-r from-cura-primary to-cura-secondary p-10 md:p-16 text-white text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to take control of your health?</h2>
-        <p className="text-white/90 mb-8 max-w-xl mx-auto">
+        <p className="text-white/90 mb-8 max-w-xl mx-auto font-medium text-lg">
           Start a conversation with Cura and get personalized health guidance based on your symptoms.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button asChild size="lg" variant="secondary" className="bg-white text-cura-primary hover:bg-gray-100">
-            <Link to="/login">
-              Login
-            </Link>
-          </Button>
-          <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-            <Link to="/register">
-              Register
+            <Link to="/auth">
+              Register/Login
             </Link>
           </Button>
           <Button asChild size="lg" className="bg-cura-primary text-white hover:bg-cura-primary/90">
             <Link to="/auth">
-              Start Conversation
+              Start Health Chat
             </Link>
           </Button>
         </div>

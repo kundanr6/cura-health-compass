@@ -3,6 +3,7 @@ import React from 'react';
 import Logo from './Logo';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { User } from 'lucide-react';
 
 const Header: React.FC = () => {
   return (
@@ -13,13 +14,12 @@ const Header: React.FC = () => {
         </Link>
         <div className="flex items-center gap-4">
           <Button asChild variant="outline" className="mr-2">
-            <Link to="/login">Login</Link>
+            <Link to="/auth">Register/Login</Link>
           </Button>
-          <Button asChild variant="outline" className="mr-2">
-            <Link to="/register">Register</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/auth">Start Conversation</Link>
+          <Button asChild variant="ghost" className="p-2">
+            <Link to="/profile">
+              <User className="h-5 w-5" />
+            </Link>
           </Button>
         </div>
       </div>

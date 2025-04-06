@@ -14,6 +14,7 @@ import Disclaimer from "./pages/Disclaimer";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
