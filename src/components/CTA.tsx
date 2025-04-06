@@ -14,12 +14,17 @@ const CTA: React.FC = () => {
         <div className="flex flex-wrap justify-center gap-4">
           <Button asChild size="lg" variant="secondary" className="bg-white text-cura-primary hover:bg-gray-100">
             <Link to="/login">
-              Sign In
+              Login
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-            <Link to="/chat">
-              Try as Guest
+            <Link to="/register">
+              Register
+            </Link>
+          </Button>
+          <Button asChild size="lg" className="bg-cura-primary text-white hover:bg-cura-primary/90">
+            <Link to="/auth">
+              Start Conversation
             </Link>
           </Button>
         </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
@@ -9,14 +9,9 @@ import CTA from '@/components/CTA';
 import MedicalDisclaimer from '@/components/MedicalDisclaimer';
 
 const Index = () => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-
   return (
     <div className="min-h-screen flex flex-col">
-      <Header 
-        currentLanguage={currentLanguage} 
-        onLanguageChange={setCurrentLanguage} 
-      />
+      <Header />
       <main className="flex-1 pt-24">
         <Hero />
         <Features />

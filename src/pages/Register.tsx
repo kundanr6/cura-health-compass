@@ -4,15 +4,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
-  
-  // This would typically handle login logic
-  const handleLogin = () => {
-    // Simulate successful login
+
+  // This would typically handle registration logic
+  const handleRegister = () => {
+    // Simulate successful registration
     // In a real app, this would validate user input and make an API call
     
-    // Redirect to the home page after successful login
+    // Redirect to the home page after successful registration
     navigate('/');
   };
 
@@ -23,15 +23,15 @@ const Login = () => {
           <div className="flex justify-center mb-4">
             <Logo />
           </div>
-          <h1 className="text-2xl font-bold text-cura-dark dark:text-white">Welcome Back</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to your Cura account</p>
+          <h1 className="text-2xl font-bold text-cura-dark dark:text-white">Create an Account</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Join Cura to manage your health journey</p>
         </div>
         
         <div className="space-y-4">
           <Button 
             variant="outline" 
             className="w-full flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700"
-            onClick={handleLogin}
+            onClick={handleRegister}
           >
             <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
               <g transform="matrix(1, 0, 0, 1, 0, 0)">
@@ -41,7 +41,7 @@ const Login = () => {
                 <path d="M5.3,14.7c-0.4-1.1-0.7-2.2-0.7-3.4s0.2-2.3,0.7-3.4l-3.3-2.6C0.7,7.2,0,9.8,0,12.5s0.7,5.3,1.9,7.2L5.3,14.7z" fill="#EA4335"></path>
               </g>
             </svg>
-            Sign in with Google
+            Sign up with Google
           </Button>
           
           <div className="relative">
@@ -78,40 +78,20 @@ const Login = () => {
               />
             </div>
             
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-cura-primary focus:ring-cura-primary border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                  Remember me
-                </label>
-              </div>
-              
-              <div className="text-sm">
-                <a href="#" className="text-cura-primary hover:underline">
-                  Forgot password?
-                </a>
-              </div>
-            </div>
-            
             <Button 
               className="w-full bg-cura-primary hover:bg-cura-primary/90"
-              onClick={handleLogin}
+              onClick={handleRegister}
             >
-              Sign in
+              Create Account
             </Button>
           </div>
         </div>
 
         <div className="text-center text-sm">
           <p className="text-gray-600 dark:text-gray-400">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-cura-primary hover:underline">
-              Register
+            Already have an account?{" "}
+            <Link to="/login" className="text-cura-primary hover:underline">
+              Log in
             </Link>
           </p>
         </div>
@@ -120,4 +100,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

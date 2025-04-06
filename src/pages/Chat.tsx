@@ -11,7 +11,6 @@ import { generateId, getWelcomeMessage, analyzeSymptoms, formatHealthAnalysis } 
 import { useToast } from '@/components/ui/use-toast';
 
 const Chat = () => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -21,9 +20,9 @@ const Chat = () => {
   // Initialize chat with welcome message
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([getWelcomeMessage(currentLanguage)]);
+      setMessages([getWelcomeMessage('en')]);
     }
-  }, [currentLanguage, messages.length]);
+  }, [messages.length]);
 
   // Scroll to bottom of chat when messages change
   useEffect(() => {
@@ -92,10 +91,7 @@ const Chat = () => {
   if (!disclaimerAccepted) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header
-          currentLanguage={currentLanguage}
-          onLanguageChange={setCurrentLanguage}
-        />
+        <Header />
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="max-w-md w-full">
             <div className="text-center mb-6">
@@ -122,10 +118,7 @@ const Chat = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header
-        currentLanguage={currentLanguage}
-        onLanguageChange={setCurrentLanguage}
-      />
+      <Header />
       <main className="flex-1 flex flex-col pt-24">
         <div className="flex-1 overflow-y-auto pb-24">
           <div className="max-w-4xl mx-auto pt-4">
@@ -139,10 +132,7 @@ const Chat = () => {
         <ChatInput 
           onSendMessage={handleSendMessage} 
           isProcessing={isProcessing}
-          placeholder={currentLanguage === 'en' 
-            ? "Describe your symptoms or health concerns..."
-            : "अपने लक्षणों या स्वास्थ्य चिंताओं का वर्णन करें..." // Hindi placeholder
-          }
+          placeholder="Describe your symptoms or health concerns..."
         />
       </main>
       <Footer />
