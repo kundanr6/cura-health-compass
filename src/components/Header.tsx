@@ -22,9 +22,9 @@ const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChange }) =>
             currentLanguage={currentLanguage}
             onLanguageChange={onLanguageChange}
           />
-          <Link to="/chat">
-            <Button>Start Conversation</Button>
-          </Link>
+          <Button asChild>
+            <Link to="/chat">Start Conversation</Link>
+          </Button>
         </div>
       </div>
     </header>

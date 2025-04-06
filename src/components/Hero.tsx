@@ -16,16 +16,16 @@ const Hero: React.FC = () => {
               Cura analyzes your symptoms in multiple languages, offers health guidance, and provides wellness tips—no doctor required.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/chat">
-                <Button size="lg" className="bg-gradient-to-r from-cura-primary to-cura-secondary hover:opacity-90 transition-opacity">
+              <Button asChild size="lg" className="bg-gradient-to-r from-cura-primary to-cura-secondary hover:opacity-90 transition-opacity">
+                <Link to="/chat">
                   Start Health Chat
-                </Button>
-              </Link>
-              <Link to="/about">
-                <Button size="lg" variant="outline">
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/about">
                   Learn More
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
           </div>
           <div className="flex-1 relative">
