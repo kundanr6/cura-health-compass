@@ -11,11 +11,18 @@ const CTA: React.FC = () => {
         <p className="text-white/90 mb-8 max-w-xl mx-auto">
           Start a conversation with Cura and get personalized health guidance based on your symptoms.
         </p>
-        <Button asChild size="lg" variant="secondary" className="bg-white text-cura-primary hover:bg-gray-100">
-          <Link to="/chat">
-            Start Your Health Journey
-          </Link>
-        </Button>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button asChild size="lg" variant="secondary" className="bg-white text-cura-primary hover:bg-gray-100">
+            <Link to="/login">
+              Sign In
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Link to="/chat">
+              Try as Guest
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );

@@ -22,6 +22,9 @@ const Header: React.FC<HeaderProps> = ({ currentLanguage, onLanguageChange }) =>
             currentLanguage={currentLanguage}
             onLanguageChange={onLanguageChange}
           />
+          <Button asChild variant="outline" className="mr-2">
+            <Link to="/login">Sign In</Link>
+          </Button>
           <Button asChild>
             <Link to="/chat">Start Conversation</Link>
           </Button>
