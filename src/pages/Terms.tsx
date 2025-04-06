@@ -1,17 +1,11 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const Terms = () => {
-  const [currentLanguage, setCurrentLanguage] = useState('en');
-
   return (
     <div className="min-h-screen flex flex-col">
-      <Header 
-        currentLanguage={currentLanguage} 
-        onLanguageChange={setCurrentLanguage} 
-      />
+      <Header />
       <main className="flex-1 pt-24 px-4">
         <div className="max-w-4xl mx-auto py-12">
           <h1 className="text-4xl font-bold mb-6">Terms of Use</h1>
