@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { SendHorizonal } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -33,9 +34,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <form 
+    <motion.form 
       onSubmit={handleSubmit} 
       className="border-t bg-white/80 dark:bg-slate-950/80 backdrop-blur-sm p-4 sticky bottom-0"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
     >
       <div className="flex gap-2 items-end max-w-4xl mx-auto">
         <Textarea
@@ -46,16 +50,21 @@ const ChatInput: React.FC<ChatInputProps> = ({
           className="min-h-[60px] max-h-[200px] resize-none"
           disabled={isProcessing}
         />
-        <Button 
-          type="submit" 
-          size="icon" 
-          className="h-[60px] w-[60px] bg-cura-primary hover:bg-cura-primary/90"
-          disabled={!message.trim() || isProcessing}
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <SendHorizonal className="h-5 w-5" />
-        </Button>
+          <Button 
+            type="submit" 
+            size="icon" 
+            className="h-[60px] w-[60px] bg-cura-primary hover:bg-cura-primary/90"
+            disabled={!message.trim() || isProcessing}
+          >
+            <SendHorizonal className="h-5 w-5" />
+          </Button>
+        </motion.div>
       </div>
-    </form>
+    </motion.form>
   );
 };
 

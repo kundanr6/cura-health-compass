@@ -6,14 +6,23 @@ import MedicalDisclaimer from '@/components/MedicalDisclaimer';
 import ChatMessage from '@/components/chat/ChatMessage';
 import ChatInput from '@/components/chat/ChatInput';
 import TypingIndicator from '@/components/chat/TypingIndicator';
+import EmergencyAlert from '@/components/chat/EmergencyAlert';
 import { Message } from '@/types/chat';
 import { generateId, getWelcomeMessage, analyzeSymptoms, formatHealthAnalysis } from '@/utils/chatHelpers';
 import { useToast } from '@/components/ui/use-toast';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
+  const [emergencyAlert, setEmergencyAlert] = useState({
+    isOpen: false,
+    message: ''
+  });
+  const [templateMessage, setTemplateMessage] = useState(
+    "Hi! I'm not feeling well. My symptoms are: [fever], [sore throat], and [fatigue]. It started [2 days ago] and feels [moderate]. What could it be?"
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -40,31 +49,50 @@ const Chat = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
     
+    // Check for emergency keywords
+    const emergencyKeywords = [
+      'chest pain', 'can\'t breathe', 'difficulty breathing', 'unconscious', 
+      'fainted', 'stroke', 'heart attack', 'bleeding heavily', 'suicide', 
+      'worst headache', 'paralysis', 'seizure', 'overdose', 'poisoning'
+    ];
+    
+    const contentLower = content.toLowerCase();
+    const detectedEmergency = emergencyKeywords.some(keyword => contentLower.includes(keyword));
+    
+    if (detectedEmergency) {
+      setEmergencyAlert({
+        isOpen: true,
+        message: "Your symptoms may indicate a serious condition requiring immediate medical attention. Please consult a healthcare professional or emergency services right away."
+      });
+    }
+    
     try {
       // Analyze symptoms
       const analysis = await analyzeSymptoms(content);
       
-      // Check for emergency
+      // Check for emergency from analysis
       if (analysis.emergencyLevel === 'high') {
-        toast({
-          title: "⚠️ Emergency Warning",
-          description: analysis.emergencyMessage || "Your symptoms may require immediate medical attention.",
-          variant: "destructive",
+        setEmergencyAlert({
+          isOpen: true,
+          message: analysis.emergencyMessage || "Your symptoms may indicate a serious condition. Please consult a medical professional immediately."
         });
       }
       
       // Format response
       const responseContent = formatHealthAnalysis(analysis);
       
-      // Add assistant response
-      const assistantMessage: Message = {
-        id: generateId(),
-        role: 'assistant',
-        content: responseContent,
-        timestamp: new Date()
-      };
-      
-      setMessages(prev => [...prev, assistantMessage]);
+      // Add assistant response with animation delay
+      setTimeout(() => {
+        const assistantMessage: Message = {
+          id: generateId(),
+          role: 'assistant',
+          content: responseContent,
+          timestamp: new Date()
+        };
+        
+        setMessages(prev => [...prev, assistantMessage]);
+        setIsProcessing(false);
+      }, 1000); // Delay to simulate thinking
     } catch (error) {
       console.error('Error analyzing symptoms:', error);
       
@@ -83,16 +111,28 @@ const Chat = () => {
         description: "There was a problem analyzing your symptoms. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleUseTemplate = () => {
+    handleSendMessage(templateMessage);
+  };
+
+  const handleCloseEmergencyAlert = () => {
+    setEmergencyAlert({ isOpen: false, message: '' });
   };
 
   if (!disclaimerAccepted) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-1 flex items-center justify-center p-4">
+        <motion.main 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="flex-1 flex items-center justify-center p-4"
+        >
           <div className="max-w-md w-full">
             <div className="text-center mb-6">
               <h1 className="text-2xl font-bold mb-2">Before We Begin</h1>
@@ -102,15 +142,17 @@ const Chat = () => {
             </div>
             <MedicalDisclaimer showAsDialog={false} />
             <div className="mt-6 text-center">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setDisclaimerAccepted(true)}
                 className="bg-cura-primary text-white px-6 py-2 rounded-md font-medium hover:bg-cura-primary/90 transition-colors"
               >
                 I Understand and Accept
-              </button>
+              </motion.button>
             </div>
           </div>
-        </main>
+        </motion.main>
         <Footer />
       </div>
     );
@@ -121,10 +163,39 @@ const Chat = () => {
       <Header />
       <main className="flex-1 flex flex-col pt-24">
         <div className="flex-1 overflow-y-auto pb-24">
-          <div className="max-w-4xl mx-auto pt-4">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))}
+          <div className="max-w-4xl mx-auto pt-4 px-4">
+            {messages.length === 1 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mb-8 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
+              >
+                <h3 className="font-medium mb-2">Example message format:</h3>
+                <p className="text-slate-600 dark:text-slate-400">{templateMessage}</p>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleUseTemplate}
+                  className="mt-3 text-sm text-cura-primary hover:underline"
+                >
+                  Use this template
+                </motion.button>
+              </motion.div>
+            )}
+            <AnimatePresence>
+              {messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChatMessage message={message} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
             {isProcessing && <TypingIndicator />}
             <div ref={messagesEndRef} />
           </div>
@@ -135,6 +206,11 @@ const Chat = () => {
           placeholder="Describe your symptoms or health concerns..."
         />
       </main>
+      <EmergencyAlert 
+        isOpen={emergencyAlert.isOpen} 
+        message={emergencyAlert.message}
+        onClose={handleCloseEmergencyAlert}
+      />
       <Footer />
     </div>
   );
