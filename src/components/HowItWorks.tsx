@@ -37,8 +37,8 @@ const HowItWorks: React.FC = () => {
           viewport={{ once: true }}
           className="text-center mb-10 md:mb-14"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">How Cura Works</h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 md:mb-4">How Cura Works</h2>
+          <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Getting health guidance with Cura is simple and straightforward. Here's how it works:
           </p>
         </motion.div>
@@ -54,10 +54,10 @@ const HowItWorks: React.FC = () => {
               viewport={{ once: true }}
             >
               <Card className="h-full border rounded-lg bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                <CardContent className="p-5 sm:p-6 md:p-8 relative">
-                  <div className="text-4xl sm:text-5xl font-bold text-cura-primary/20 mb-3 md:mb-4">{step.number}</div>
-                  <h3 className="text-lg sm:text-xl font-semibold mb-2">{step.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">{step.description}</p>
+                <CardContent className="p-4 sm:p-5 md:p-8 relative">
+                  <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-cura-primary/20 mb-2 sm:mb-3 md:mb-4">{step.number}</div>
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2">{step.title}</h3>
+                  <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">{step.description}</p>
                   {index < steps.length - 1 && (
                     <div className="lg:block hidden absolute top-1/3 right-0 transform translate-x-1/2 w-8 h-8 z-10">
                       <svg 

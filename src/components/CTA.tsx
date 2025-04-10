@@ -25,7 +25,7 @@ const CTA: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="rounded-xl sm:rounded-2xl bg-gradient-to-r from-cura-primary to-cura-secondary p-6 sm:p-8 md:p-12 lg:p-16 text-white text-center relative overflow-hidden shadow-lg"
+          className="rounded-xl sm:rounded-2xl bg-gradient-to-r from-cura-primary to-cura-secondary p-5 sm:p-6 md:p-8 lg:p-12 text-white text-center relative overflow-hidden shadow-lg"
         >
           {/* Decorative elements */}
           <div className="absolute top-0 left-0 w-full h-full">
@@ -37,7 +37,7 @@ const CTA: React.FC = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 relative z-10"
+            className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 md:mb-4 relative z-10"
           >
             Ready to take control of your health?
           </motion.h2>
@@ -45,7 +45,7 @@ const CTA: React.FC = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="text-white/90 mb-6 md:mb-8 max-w-xl mx-auto font-medium text-base md:text-lg relative z-10"
+            className="text-white/90 mb-4 sm:mb-6 md:mb-8 max-w-xl mx-auto font-medium text-xs sm:text-sm md:text-base lg:text-lg relative z-10"
           >
             Start a conversation with Cura and get personalized health guidance based on your symptoms.
           </motion.p>
@@ -60,7 +60,7 @@ const CTA: React.FC = () => {
                 <Button 
                   size="lg" 
                   variant="secondary" 
-                  className="w-full sm:w-auto bg-white text-cura-primary hover:bg-gray-100 shadow-md"
+                  className="w-full sm:w-auto bg-white text-cura-primary hover:bg-gray-100 shadow-md text-xs sm:text-sm md:text-base"
                   onClick={() => navigate('/auth')}
                 >
                   Register/Login
@@ -70,7 +70,7 @@ const CTA: React.FC = () => {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-cura-primary/90 border border-white/30 text-white hover:bg-cura-primary/80 shadow-md"
+                  className="w-full sm:w-auto bg-cura-primary/90 border border-white/30 text-white hover:bg-cura-primary/80 shadow-md text-xs sm:text-sm md:text-base"
                   onClick={handleChatClick}
                 >
                   Start Health Chat

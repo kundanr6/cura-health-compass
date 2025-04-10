@@ -48,8 +48,8 @@ const Features: React.FC = () => {
           viewport={{ once: true }}
           className="text-center mb-10 md:mb-14"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">Health Guidance at Your Fingertips</h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 md:mb-4">Health Guidance at Your Fingertips</h2>
+          <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Cura combines AI technology with medical knowledge to provide accessible health guidance for everyone.
           </p>
         </motion.div>
@@ -66,16 +66,16 @@ const Features: React.FC = () => {
               <Card 
                 className="h-full relative border rounded-lg bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow group overflow-hidden"
               >
-                <CardContent className="p-5 sm:p-6 md:p-7">
-                  <div className="flex items-center mb-4">
+                <CardContent className="p-4 sm:p-5 md:p-7">
+                  <div className="flex items-center mb-3 sm:mb-4">
                     <div className="p-2 rounded-lg bg-cura-primary/10 dark:bg-cura-primary/20">
                       {feature.icon}
                     </div>
                   </div>
-                  <h3 className="text-lg sm:text-xl font-semibold mb-2 group-hover:text-cura-primary transition-colors">
+                  <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1 sm:mb-2 group-hover:text-cura-primary transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+                  <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
                     {feature.description}
                   </p>
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-cura-primary/5 to-transparent rounded-bl-full -z-10"></div>

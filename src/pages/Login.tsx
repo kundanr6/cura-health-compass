@@ -81,19 +81,19 @@ const Login = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 gradient-bg">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-lg p-8 space-y-6 border border-gray-100 dark:border-slate-800">
-        <div className="text-center space-y-2">
-          <div className="flex justify-center mb-4">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-lg p-6 sm:p-8 space-y-4 sm:space-y-6 border border-gray-100 dark:border-slate-800">
+        <div className="text-center space-y-1 sm:space-y-2">
+          <div className="flex justify-center mb-3 sm:mb-4">
             <Logo />
           </div>
-          <h1 className="text-2xl font-bold text-cura-dark dark:text-white">Welcome Back</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Sign in to your Cura account</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-cura-dark dark:text-white">Welcome Back</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Sign in to your Cura account</p>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <Button 
             variant="outline" 
-            className="w-full flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700"
+            className="w-full flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 text-xs sm:text-sm"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
           >
@@ -118,22 +118,23 @@ const Login = () => {
           </div>
           
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-3 sm:space-y-4">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">Email</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="you@example.com" 
                         type="email" 
-                        {...field}
+                        {...field} 
                         disabled={isLoading}
+                        className="text-xs sm:text-sm h-9 sm:h-10"
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
@@ -143,16 +144,17 @@ const Login = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">Password</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="••••••••" 
                         type="password" 
-                        {...field}
+                        {...field} 
                         disabled={isLoading}
+                        className="text-xs sm:text-sm h-9 sm:h-10"
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
@@ -168,14 +170,15 @@ const Login = () => {
                           checked={field.value} 
                           onCheckedChange={field.onChange}
                           disabled={isLoading}
+                          className="h-3.5 w-3.5 sm:h-4 sm:w-4"
                         />
                       </FormControl>
-                      <FormLabel className="text-sm font-normal">Remember me</FormLabel>
+                      <FormLabel className="text-xs sm:text-sm font-normal">Remember me</FormLabel>
                     </FormItem>
                   )}
                 />
                 
-                <div className="text-sm">
+                <div className="text-xs sm:text-sm">
                   <Link to="/forgot-password" className="text-cura-primary hover:underline">
                     Forgot password?
                   </Link>
@@ -184,7 +187,7 @@ const Login = () => {
               
               <Button 
                 type="submit"
-                className="w-full bg-cura-primary hover:bg-cura-primary/90"
+                className="w-full bg-cura-primary hover:bg-cura-primary/90 text-xs sm:text-sm h-9 sm:h-10"
                 disabled={isLoading}
               >
                 {isLoading ? "Signing in..." : "Sign in"}
@@ -203,7 +206,7 @@ const Login = () => {
           
           <Button 
             variant="ghost" 
-            className="w-full text-gray-600 dark:text-gray-400"
+            className="w-full text-gray-600 dark:text-gray-400 text-xs sm:text-sm h-9 sm:h-10"
             onClick={handleGuestAccess}
           >
             Continue as Guest
@@ -211,7 +214,7 @@ const Login = () => {
           
         </div>
 
-        <div className="text-center text-sm">
+        <div className="text-center text-xs sm:text-sm">
           <p className="text-gray-600 dark:text-gray-400">
             Don't have an account?{" "}
             <Link to="/register" className="text-cura-primary hover:underline">
