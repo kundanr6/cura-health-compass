@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import MedicalDisclaimer from '@/components/MedicalDisclaimer';
 import ChatMessage from '@/components/chat/ChatMessage';
 import ChatInput from '@/components/chat/ChatInput';
 import TypingIndicator from '@/components/chat/TypingIndicator';
@@ -25,14 +24,10 @@ const Chat = () => {
   const { currentUser } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [emergencyAlert, setEmergencyAlert] = useState({
     isOpen: false,
     message: ''
   });
-  const [templateMessage, setTemplateMessage] = useState(
-    "Hi! I'm not feeling well. My symptoms are: [fever], [sore throat], and [fatigue]. It started [2 days ago] and feels [moderate]. What could it be?"
-  );
   const [activeChatSessionId, setActiveChatSessionId] = useState<string | null>(sessionId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -177,48 +172,9 @@ const Chat = () => {
     }
   };
 
-  const handleUseTemplate = () => {
-    handleSendMessage(templateMessage);
-  };
-
   const handleCloseEmergencyAlert = () => {
     setEmergencyAlert({ isOpen: false, message: '' });
   };
-
-  if (!disclaimerAccepted) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <motion.main 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="flex-1 flex items-center justify-center p-4"
-        >
-          <div className="max-w-md w-full">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold mb-2">Before We Begin</h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Please read and accept our medical disclaimer before using Cura's health AI assistant.
-              </p>
-            </div>
-            <MedicalDisclaimer showAsDialog={false} />
-            <div className="mt-6 text-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setDisclaimerAccepted(true)}
-                className="bg-cura-primary text-white px-6 py-2 rounded-md font-medium hover:bg-cura-primary/90 transition-colors"
-              >
-                I Understand and Accept
-              </motion.button>
-            </div>
-          </div>
-        </motion.main>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -226,25 +182,6 @@ const Chat = () => {
       <main className="flex-1 flex flex-col pt-24">
         <div className="flex-1 overflow-y-auto pb-24">
           <div className="max-w-4xl mx-auto pt-4 px-4">
-            {messages.length === 1 && !isLoadingHistory && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="mb-8 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700"
-              >
-                <h3 className="font-medium mb-2">Example message format:</h3>
-                <p className="text-slate-600 dark:text-slate-400">{templateMessage}</p>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleUseTemplate}
-                  className="mt-3 text-sm text-cura-primary hover:underline"
-                >
-                  Use this template
-                </motion.button>
-              </motion.div>
-            )}
             {isLoadingHistory ? (
               <div className="flex justify-center py-8">
                 <div className="animate-pulse flex flex-col items-center">

@@ -75,6 +75,10 @@ const Login = () => {
     }
   };
 
+  const handleGuestAccess = () => {
+    navigate('/chat');
+  };
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 gradient-bg">
       <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-lg p-8 space-y-6 border border-gray-100 dark:border-slate-800">
@@ -187,6 +191,24 @@ const Login = () => {
               </Button>
             </form>
           </Form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t"></span>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white dark:bg-slate-900 px-2 text-gray-500">Or</span>
+            </div>
+          </div>
+          
+          <Button 
+            variant="ghost" 
+            className="w-full text-gray-600 dark:text-gray-400"
+            onClick={handleGuestAccess}
+          >
+            Continue as Guest
+          </Button>
+          
         </div>
 
         <div className="text-center text-sm">

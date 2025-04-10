@@ -75,7 +75,7 @@ const Auth = () => {
         </div>
 
         <p className="text-xs text-center text-gray-500 dark:text-gray-400 px-6">
-          Sign in or register to save your chat history and profile. Continue as guest to explore without saving anything.
+          Sign in or register to save your chat history and profile. Continue as guest to explore without an account.
         </p>
       </motion.div>
     </div>

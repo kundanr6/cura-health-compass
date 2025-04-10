@@ -3,8 +3,13 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Brain, MessageCircleHeart, Shield, UserRound, Stethoscope } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Hero: React.FC = () => {
+  const { currentUser } = useAuth();
+  const targetPath = currentUser ? '/chat' : '/auth';
+
   return (
     <section className="gradient-bg py-12 md:py-16 lg:py-20 px-4 sm:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -24,7 +29,7 @@ const Hero: React.FC = () => {
             <div className="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
                 <Button asChild size="lg" className="w-full bg-gradient-to-r from-cura-primary to-cura-secondary hover:opacity-90 transition-opacity shadow-md">
-                  <Link to="/auth">
+                  <Link to={targetPath}>
                     Start Health Chat
                   </Link>
                 </Button>
@@ -38,48 +43,95 @@ const Hero: React.FC = () => {
               </motion.div>
             </div>
           </motion.div>
+
           <div className="flex-1 relative mt-10 md:mt-0">
-            <div className="relative w-full h-[220px] sm:h-[280px] md:h-[340px] lg:h-[400px]">
+            <div className="relative w-full h-[280px] sm:h-[320px] md:h-[360px] lg:h-[420px]">
+              {/* AI Brain Analysis */}
               <motion.div 
-                initial={{ opacity: 0, rotate: -10 }}
-                animate={{ opacity: 1, rotate: -5 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="absolute top-0 left-0 w-[180px] sm:w-[220px] md:w-[260px] h-[120px] sm:h-[140px] md:h-[160px] bg-cura-primary/10 rounded-lg p-4 sm:p-5 shadow-lg border backdrop-blur-sm z-10"
+                initial={{ opacity: 0, y: -20, rotate: -3 }}
+                animate={{ opacity: 1, y: 0, rotate: -3 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="absolute top-0 left-0 md:left-10 w-[180px] sm:w-[200px] md:w-[220px] bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-30"
               >
-                <div className="h-3 sm:h-4 w-24 sm:w-32 bg-cura-primary/30 rounded-full mb-2 sm:mb-3"></div>
-                <div className="h-2 w-36 sm:w-48 bg-gray-300 dark:bg-gray-700 rounded-full mb-2"></div>
-                <div className="h-2 w-32 sm:w-40 bg-gray-300 dark:bg-gray-700 rounded-full mb-2"></div>
-                <div className="h-2 w-34 sm:w-44 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, rotate: 10 }}
-                animate={{ opacity: 1, rotate: 3 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="absolute top-[60px] sm:top-[80px] md:top-[100px] right-0 w-[180px] sm:w-[220px] md:w-[260px] h-[140px] sm:h-[160px] md:h-[180px] bg-white dark:bg-slate-900 rounded-lg p-4 sm:p-5 shadow-lg border z-20"
-              >
-                <div className="flex items-center gap-2 mb-3 sm:mb-4">
-                  <div className="w-6 sm:w-8 h-6 sm:h-8 rounded-full bg-cura-secondary"></div>
-                  <div className="h-2 sm:h-3 w-16 sm:w-20 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+                <div className="flex items-center justify-center mb-3">
+                  <Brain className="w-10 h-10 text-cura-primary" />
                 </div>
-                <div className="h-2 w-36 sm:w-48 bg-gray-200 dark:bg-slate-700 rounded-full mb-2"></div>
-                <div className="h-2 w-32 sm:w-40 bg-gray-200 dark:bg-slate-700 rounded-full mb-2"></div>
-                <div className="h-2 w-34 sm:w-44 bg-gray-200 dark:bg-slate-700 rounded-full mb-3 sm:mb-4"></div>
-                <div className="h-6 sm:h-8 w-24 sm:w-32 bg-cura-primary/20 rounded-md ml-auto"></div>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                className="absolute bottom-0 left-[10px] sm:left-[30px] md:left-[50px] w-[180px] sm:w-[220px] md:w-[260px] h-[110px] sm:h-[130px] md:h-[150px] bg-white dark:bg-slate-900 rounded-lg p-3 sm:p-4 md:p-5 shadow-lg border z-30"
-              >
-                <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <div className="w-5 sm:w-6 md:w-7 h-5 sm:h-6 md:h-7 rounded-full bg-cura-primary"></div>
-                  <div className="h-2 sm:h-2.5 w-14 sm:w-16 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+                <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
+                <div className="h-2 w-5/6 bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
+                <div className="h-2 w-4/6 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="h-3 w-16 bg-cura-primary/20 rounded-full"></div>
+                  <div className="text-xs font-medium text-cura-primary">AI Analysis</div>
                 </div>
-                <div className="h-2 w-36 sm:w-40 bg-gray-200 dark:bg-slate-700 rounded-full mb-1.5 sm:mb-2"></div>
-                <div className="h-2 w-32 sm:w-36 bg-gray-200 dark:bg-slate-700 rounded-full mb-1.5 sm:mb-2"></div>
-                <div className="h-2 w-28 sm:w-32 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
               </motion.div>
+
+              {/* Digital Health Assistant */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="absolute top-[80px] sm:top-[90px] md:top-[100px] right-0 md:right-10 w-[180px] sm:w-[200px] md:w-[220px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-20"
+              >
+                <div className="flex items-center justify-center mb-3">
+                  <Stethoscope className="w-10 h-10 text-cura-secondary" />
+                </div>
+                <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
+                <div className="h-2 w-5/6 bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
+                <div className="h-2 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="h-3 w-16 bg-cura-secondary/20 rounded-full"></div>
+                  <div className="text-xs font-medium text-cura-secondary">Digital Doctor</div>
+                </div>
+              </motion.div>
+
+              {/* Chat Interface */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="absolute bottom-10 left-5 md:left-20 w-[180px] sm:w-[200px] md:w-[220px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-40"
+              >
+                <div className="flex items-center justify-center mb-3">
+                  <MessageCircleHeart className="w-10 h-10 text-cura-primary" />
+                </div>
+                <div className="flex gap-2 mb-3">
+                  <div className="h-6 w-6 bg-cura-primary/20 rounded-full flex items-center justify-center">
+                    <UserRound className="w-3 h-3 text-cura-primary" />
+                  </div>
+                  <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded-full self-center"></div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-6 w-6 bg-cura-secondary/20 rounded-full flex items-center justify-center">
+                    <Shield className="w-3 h-3 text-cura-secondary" />
+                  </div>
+                  <div className="h-2 w-20 bg-gray-200 dark:bg-gray-700 rounded-full self-center"></div>
+                </div>
+                <div className="mt-3 flex justify-between items-center">
+                  <div className="h-3 w-12 bg-cura-primary/20 rounded-full"></div>
+                  <div className="text-xs font-medium text-cura-primary">Health Chat</div>
+                </div>
+              </motion.div>
+
+              {/* Connection Lines (decorative) */}
+              <svg className="absolute inset-0 w-full h-full z-10 opacity-60 dark:opacity-40" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 80 L200 150 L300 120" stroke="url(#grad1)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                <path d="M100 80 L150 220" stroke="url(#grad2)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                <path d="M300 120 L150 220" stroke="url(#grad3)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                <defs>
+                  <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#0ea5e9" />
+                    <stop offset="100%" stopColor="#8b5cf6" />
+                  </linearGradient>
+                  <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#ec4899" />
+                  </linearGradient>
+                  <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#0ea5e9" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </div>
           </div>
         </div>
