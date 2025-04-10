@@ -2,7 +2,7 @@
 import React from 'react';
 import Logo from './Logo';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, User, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,12 +24,21 @@ import {
 
 const Header: React.FC = () => {
   const { currentUser, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     try {
       await signOut();
     } catch (error) {
       console.error('Failed to sign out:', error);
+    }
+  };
+
+  const handleChatClick = () => {
+    if (!currentUser) {
+      navigate('/auth');
+    } else {
+      navigate('/chat');
     }
   };
 
@@ -61,14 +70,17 @@ const Header: React.FC = () => {
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     <li className="row-span-3">
                       <NavigationMenuLink asChild>
-                        <Link to="/chat" className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-cura-primary/50 to-cura-secondary/50 p-6 no-underline outline-none focus:shadow-md">
+                        <div 
+                          onClick={handleChatClick}
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-cura-primary/50 to-cura-secondary/50 p-6 no-underline outline-none focus:shadow-md cursor-pointer"
+                        >
                           <div className="mb-2 text-lg font-medium text-white">
                             Health Chat
                           </div>
                           <p className="text-sm leading-tight text-white/90">
                             Start a personalized health consultation with Cura AI.
                           </p>
-                        </Link>
+                        </div>
                       </NavigationMenuLink>
                     </li>
                     <li>
@@ -95,9 +107,12 @@ const Header: React.FC = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/chat" className={navigationMenuTriggerStyle()}>
+                <div 
+                  onClick={handleChatClick}
+                  className={navigationMenuTriggerStyle() + " cursor-pointer"}
+                >
                   Chat
-                </Link>
+                </div>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -180,9 +195,18 @@ const Header: React.FC = () => {
                     </Link>
                   </SheetClose>
                   <SheetClose asChild>
-                    <Link to="/chat" className="px-2 py-1.5 text-lg hover:text-cura-primary transition-colors">
+                    <div 
+                      className="px-2 py-1.5 text-lg hover:text-cura-primary transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (!currentUser) {
+                          navigate('/auth');
+                        } else {
+                          navigate('/chat');
+                        }
+                      }}
+                    >
                       Chat
-                    </Link>
+                    </div>
                   </SheetClose>
                   <SheetClose asChild>
                     <Link to="/disclaimer" className="px-2 py-1.5 text-lg hover:text-cura-primary transition-colors">

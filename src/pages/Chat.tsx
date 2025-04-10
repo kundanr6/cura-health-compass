@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ChatMessage from '@/components/chat/ChatMessage';
@@ -22,6 +21,7 @@ const Chat = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('sessionId');
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [emergencyAlert, setEmergencyAlert] = useState({
@@ -32,12 +32,26 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [hasAuthenticated, setHasAuthenticated] = useState(false);
 
-  // Initialize chat with welcome message or load existing chat
   useEffect(() => {
+    const fromAuth = sessionStorage.getItem('fromAuth') === 'true';
+    
+    if (!currentUser && !fromAuth) {
+      navigate('/auth');
+    } else {
+      setHasAuthenticated(true);
+      if (fromAuth) {
+        sessionStorage.removeItem('fromAuth');
+      }
+    }
+  }, [currentUser, navigate]);
+
+  useEffect(() => {
+    if (!hasAuthenticated) return;
+    
     const initChat = async () => {
       if (sessionId) {
-        // Load existing chat session
         setIsLoadingHistory(true);
         try {
           const chatMessages = await getSessionMessages(sessionId);
@@ -59,15 +73,13 @@ const Chat = () => {
           setIsLoadingHistory(false);
         }
       } else if (messages.length === 0) {
-        // New chat session
         setMessages([getWelcomeMessage('en')]);
       }
     };
 
     initChat();
-  }, [sessionId, toast]);
+  }, [sessionId, toast, hasAuthenticated]);
 
-  // Scroll to bottom of chat when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -83,7 +95,6 @@ const Chat = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
     
-    // Check for emergency keywords
     const emergencyKeywords = [
       'chest pain', 'can\'t breathe', 'difficulty breathing', 'unconscious', 
       'fainted', 'stroke', 'heart attack', 'bleeding heavily', 'suicide', 
@@ -101,7 +112,6 @@ const Chat = () => {
     }
     
     try {
-      // Create a new chat session if needed (for logged-in users)
       if (currentUser && !activeChatSessionId) {
         const newSessionId = await createChatSession(
           currentUser.uid, 
@@ -113,15 +123,12 @@ const Chat = () => {
         }
       }
       
-      // Save user message (for logged-in users)
       if (currentUser && activeChatSessionId) {
         await saveMessage(currentUser.uid, activeChatSessionId, userMessage);
       }
       
-      // Analyze symptoms
       const analysis = await analyzeSymptoms(content);
       
-      // Check for emergency from analysis
       if (analysis.emergencyLevel === 'high') {
         setEmergencyAlert({
           isOpen: true,
@@ -129,10 +136,8 @@ const Chat = () => {
         });
       }
       
-      // Format response
       const responseContent = formatHealthAnalysis(analysis);
       
-      // Add assistant response with animation delay
       setTimeout(() => {
         const assistantMessage: Message = {
           id: generateId(),
@@ -143,17 +148,15 @@ const Chat = () => {
         
         setMessages(prev => [...prev, assistantMessage]);
         
-        // Save assistant message (for logged-in users)
         if (currentUser && activeChatSessionId) {
           saveMessage(currentUser.uid, activeChatSessionId, assistantMessage);
         }
         
         setIsProcessing(false);
-      }, 1000); // Delay to simulate thinking
+      }, 1000);
     } catch (error) {
       console.error('Error analyzing symptoms:', error);
       
-      // Add error message
       const errorMessage: Message = {
         id: generateId(),
         role: 'assistant',
@@ -175,6 +178,10 @@ const Chat = () => {
   const handleCloseEmergencyAlert = () => {
     setEmergencyAlert({ isOpen: false, message: '' });
   };
+
+  if (!hasAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

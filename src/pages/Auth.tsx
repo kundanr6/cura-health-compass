@@ -9,6 +9,8 @@ const Auth = () => {
   const navigate = useNavigate();
 
   const handleGuestAccess = () => {
+    // Set a flag in session storage to indicate guest access was chosen
+    sessionStorage.setItem('fromAuth', 'true');
     // Navigate directly to the chat page for guest users
     navigate('/chat');
   };

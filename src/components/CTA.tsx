@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -9,11 +9,16 @@ const CTA: React.FC = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  // For unauthenticated users, direct to auth page
-  const targetPath = currentUser ? '/chat' : '/auth';
+  const handleChatClick = () => {
+    if (!currentUser) {
+      navigate('/auth');
+    } else {
+      navigate('/chat');
+    }
+  };
 
   return (
-    <section className="py-12 md:py-16 px-4 sm:px-6 overflow-hidden">
+    <section className="py-10 md:py-16 px-4 sm:px-6 overflow-hidden">
       <div className="max-w-5xl mx-auto">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -51,21 +56,24 @@ const CTA: React.FC = () => {
             className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 relative z-10"
           >
             {!currentUser ? (
-              <>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                  <Button asChild size="lg" variant="secondary" className="w-full sm:w-auto bg-white text-cura-primary hover:bg-gray-100 shadow-md">
-                    <Link to="/auth">
-                      Register/Login
-                    </Link>
-                  </Button>
-                </motion.div>
-              </>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+                <Button 
+                  size="lg" 
+                  variant="secondary" 
+                  className="w-full sm:w-auto bg-white text-cura-primary hover:bg-gray-100 shadow-md"
+                  onClick={() => navigate('/auth')}
+                >
+                  Register/Login
+                </Button>
+              </motion.div>
             ) : (
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                <Button asChild size="lg" className="w-full sm:w-auto bg-cura-primary/90 border border-white/30 text-white hover:bg-cura-primary/80 shadow-md">
-                  <Link to="/chat">
-                    Start Health Chat
-                  </Link>
+                <Button 
+                  size="lg" 
+                  className="w-full sm:w-auto bg-cura-primary/90 border border-white/30 text-white hover:bg-cura-primary/80 shadow-md"
+                  onClick={handleChatClick}
+                >
+                  Start Health Chat
                 </Button>
               </motion.div>
             )}

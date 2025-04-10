@@ -1,15 +1,28 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Footer: React.FC = () => {
+  const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChatClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!currentUser) {
+      navigate('/auth');
+    } else {
+      navigate('/chat');
+    }
+  };
+
   return (
     <footer className="w-full py-8 md:py-10 px-4 sm:px-6 border-t mt-auto bg-white dark:bg-slate-950">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="col-span-1 sm:col-span-2 md:col-span-1">
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -27,7 +40,7 @@ const Footer: React.FC = () => {
             <h3 className="font-medium mb-3 text-lg">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li><Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-cura-primary dark:hover:text-cura-primary transition-colors">Home</Link></li>
-              <li><Link to="/chat" className="text-gray-600 dark:text-gray-400 hover:text-cura-primary dark:hover:text-cura-primary transition-colors">Start Chat</Link></li>
+              <li><a href="#" onClick={handleChatClick} className="text-gray-600 dark:text-gray-400 hover:text-cura-primary dark:hover:text-cura-primary transition-colors">Start Chat</a></li>
               <li><Link to="/about" className="text-gray-600 dark:text-gray-400 hover:text-cura-primary dark:hover:text-cura-primary transition-colors">About</Link></li>
             </ul>
           </div>

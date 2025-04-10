@@ -1,24 +1,32 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Brain, MessageCircleHeart, Shield, UserRound, Stethoscope } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Hero: React.FC = () => {
   const { currentUser } = useAuth();
-  const targetPath = currentUser ? '/chat' : '/auth';
+  const navigate = useNavigate();
+  
+  const handleChatClick = () => {
+    if (!currentUser) {
+      navigate('/auth');
+    } else {
+      navigate('/chat');
+    }
+  };
 
   return (
-    <section className="gradient-bg py-12 md:py-16 lg:py-20 px-4 sm:px-6 overflow-hidden">
+    <section className="gradient-bg py-10 md:py-16 lg:py-20 px-4 sm:px-6 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex-1 text-center md:text-left"
+            className="flex-1 text-center md:text-left md:order-1 order-2"
           >
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-cura-dark dark:text-white leading-tight">
               Your AI Health Guide for Everyone, Everywhere
@@ -26,35 +34,19 @@ const Hero: React.FC = () => {
             <p className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto md:mx-0">
               Cura analyzes your symptoms, offers health guidance, and provides wellness tips—no doctor required.
             </p>
-            <div className="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                <Button asChild size="lg" className="w-full bg-gradient-to-r from-cura-primary to-cura-secondary hover:opacity-90 transition-opacity shadow-md">
-                  <Link to={targetPath}>
-                    Start Health Chat
-                  </Link>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                <Button asChild size="lg" variant="outline" className="w-full border-2 hover:bg-white/10">
-                  <Link to="/about">
-                    Learn More
-                  </Link>
-                </Button>
-              </motion.div>
-            </div>
           </motion.div>
 
-          <div className="flex-1 relative mt-10 md:mt-0">
+          <div className="flex-1 relative md:order-2 order-1 mb-8 md:mb-0">
             <div className="relative w-full h-[280px] sm:h-[320px] md:h-[360px] lg:h-[420px]">
               {/* AI Brain Analysis */}
               <motion.div 
                 initial={{ opacity: 0, y: -20, rotate: -3 }}
                 animate={{ opacity: 1, y: 0, rotate: -3 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="absolute top-0 left-0 md:left-10 w-[180px] sm:w-[200px] md:w-[220px] bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-30"
+                className="absolute top-0 left-0 md:left-10 w-[160px] sm:w-[180px] md:w-[220px] bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg p-4 md:p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-30"
               >
                 <div className="flex items-center justify-center mb-3">
-                  <Brain className="w-10 h-10 text-cura-primary" />
+                  <Brain className="w-8 h-8 md:w-10 md:h-10 text-cura-primary" />
                 </div>
                 <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
                 <div className="h-2 w-5/6 bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
@@ -70,10 +62,10 @@ const Hero: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="absolute top-[80px] sm:top-[90px] md:top-[100px] right-0 md:right-10 w-[180px] sm:w-[200px] md:w-[220px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-20"
+                className="absolute top-[80px] sm:top-[90px] md:top-[100px] right-0 md:right-10 w-[160px] sm:w-[180px] md:w-[220px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg p-4 md:p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-20"
               >
                 <div className="flex items-center justify-center mb-3">
-                  <Stethoscope className="w-10 h-10 text-cura-secondary" />
+                  <Stethoscope className="w-8 h-8 md:w-10 md:h-10 text-cura-secondary" />
                 </div>
                 <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
                 <div className="h-2 w-5/6 bg-gray-200 dark:bg-gray-700 rounded-full mb-2"></div>
@@ -89,10 +81,10 @@ const Hero: React.FC = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
-                className="absolute bottom-10 left-5 md:left-20 w-[180px] sm:w-[200px] md:w-[220px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-40"
+                className="absolute bottom-10 left-5 md:left-20 w-[160px] sm:w-[180px] md:w-[220px] bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg p-4 md:p-5 shadow-lg border border-gray-200 dark:border-gray-700 z-40"
               >
                 <div className="flex items-center justify-center mb-3">
-                  <MessageCircleHeart className="w-10 h-10 text-cura-primary" />
+                  <MessageCircleHeart className="w-8 h-8 md:w-10 md:h-10 text-cura-primary" />
                 </div>
                 <div className="flex gap-2 mb-3">
                   <div className="h-6 w-6 bg-cura-primary/20 rounded-full flex items-center justify-center">
@@ -134,6 +126,25 @@ const Hero: React.FC = () => {
               </svg>
             </div>
           </div>
+        </div>
+        
+        <div className="mt-6 md:mt-8 flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+            <Button 
+              size="lg" 
+              className="w-full bg-gradient-to-r from-cura-primary to-cura-secondary hover:opacity-90 transition-opacity shadow-md"
+              onClick={handleChatClick}
+            >
+              Start Health Chat
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+            <Button asChild size="lg" variant="outline" className="w-full border-2 hover:bg-white/10">
+              <Link to="/about">
+                Learn More
+              </Link>
+            </Button>
+          </motion.div>
         </div>
       </div>
     </section>

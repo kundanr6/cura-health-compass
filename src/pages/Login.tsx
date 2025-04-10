@@ -43,7 +43,7 @@ const Login = () => {
         title: "Success!",
         description: "You have been logged in",
       });
-      navigate('/');
+      navigate('/chat');
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -63,7 +63,7 @@ const Login = () => {
         title: "Success!",
         description: "Signed in with Google",
       });
-      navigate('/');
+      navigate('/chat');
     } catch (error: any) {
       toast({
         variant: "destructive",
