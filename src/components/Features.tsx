@@ -18,11 +18,6 @@ const features = [
     description: 'Automatic alerts when symptoms may require immediate medical attention.',
   },
   {
-    icon: '💬',
-    title: 'Multilingual Support',
-    description: 'Chat in English, Hindi, Telugu, or Tamil for inclusive healthcare guidance.',
-  },
-  {
     icon: '📱',
     title: 'Chat History',
     description: 'Track your health conversations and symptoms over time for better insights.',

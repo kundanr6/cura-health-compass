@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <Logo />
             <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 max-w-md">
-              Cura is your multilingual AI-powered wellness companion designed to bring healthcare guidance to everyone.
+              Cura is your AI-powered wellness companion designed to bring healthcare guidance to everyone.
             </p>
           </div>
           
