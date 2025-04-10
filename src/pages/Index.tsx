@@ -10,13 +10,13 @@ import MedicalDisclaimer from '@/components/MedicalDisclaimer';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden">
+    <div className="min-h-screen flex flex-col overflow-hidden">
       <Header />
       <main className="flex-1 pt-16 sm:pt-20 md:pt-24">
         <Hero />
         <Features />
         <HowItWorks />
-        <div className="max-w-3xl mx-auto px-4 py-6 md:py-8">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <MedicalDisclaimer />
         </div>
         <CTA />

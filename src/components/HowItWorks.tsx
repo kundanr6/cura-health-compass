@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 const steps = [
   {
@@ -27,40 +28,68 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-12 md:py-16 px-4 bg-gray-50 dark:bg-slate-900/50 overflow-hidden">
+    <section className="py-12 md:py-16 px-4 sm:px-6 bg-gray-50 dark:bg-slate-900/50 overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 md:mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          viewport={{ once: true }}
+          className="text-center mb-10 md:mb-14"
+        >
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">How Cura Works</h2>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
             Getting health guidance with Cura is simple and straightforward. Here's how it works:
           </p>
-        </div>
+        </motion.div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <Card className="h-full border rounded-lg bg-white dark:bg-slate-800">
-                <CardContent className="p-4 sm:p-6">
+            <motion.div 
+              key={index} 
+              className="relative"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full border rounded-lg bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                <CardContent className="p-5 sm:p-6 md:p-8 relative">
                   <div className="text-4xl sm:text-5xl font-bold text-cura-primary/20 mb-3 md:mb-4">{step.number}</div>
                   <h3 className="text-lg sm:text-xl font-semibold mb-2">{step.title}</h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">{step.description}</p>
+                  {index < steps.length - 1 && (
+                    <div className="lg:block hidden absolute top-1/3 right-0 transform translate-x-1/2 w-8 h-8 z-10">
+                      <svg 
+                        width="20" 
+                        height="20" 
+                        viewBox="0 0 20 20" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="text-cura-primary"
+                      >
+                        <path d="M10 0L20 10L10 20L8.5 18.5L16 11H0V9H16L8.5 1.5L10 0Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+                  )}
+                  <div className="block lg:hidden absolute bottom-4 right-4">
+                    {index < steps.length - 1 && (
+                      <svg 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 20 20" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="text-cura-primary"
+                      >
+                        <path d="M10 0L20 10L10 20L8.5 18.5L16 11H0V9H16L8.5 1.5L10 0Z" fill="currentColor"/>
+                      </svg>
+                    )}
+                  </div>
+                  <div className="absolute top-0 left-0 w-20 h-1 bg-gradient-to-r from-cura-primary to-cura-primary/0"></div>
                 </CardContent>
               </Card>
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-1/3 right-0 transform translate-x-1/2 w-8 h-8 z-10">
-                  <svg 
-                    width="20" 
-                    height="20" 
-                    viewBox="0 0 20 20" 
-                    fill="none" 
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="text-cura-primary"
-                  >
-                    <path d="M10 0L20 10L10 20L8.5 18.5L16 11H0V9H16L8.5 1.5L10 0Z" fill="currentColor"/>
-                  </svg>
-                </div>
-              )}
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
