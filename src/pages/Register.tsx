@@ -1,19 +1,75 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+
+const formSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
+  const { signUp, signInWithGoogle } = useAuth();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
-  // This would typically handle registration logic
-  const handleRegister = () => {
-    // Simulate successful registration
-    // In a real app, this would validate user input and make an API call
-    
-    // Redirect to the home page after successful registration
-    navigate('/');
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const handleRegister = async (values: FormValues) => {
+    try {
+      setIsLoading(true);
+      await signUp(values.email, values.password);
+      toast({
+        title: "Success!",
+        description: "Your account has been created",
+      });
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Registration failed",
+        description: error.message || "An error occurred during registration",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      await signInWithGoogle();
+      toast({
+        title: "Success!",
+        description: "Signed in with Google",
+      });
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Google sign-in failed",
+        description: error.message || "An error occurred during Google sign-in",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -31,7 +87,8 @@ const Register = () => {
           <Button 
             variant="outline" 
             className="w-full flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700"
-            onClick={handleRegister}
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
           >
             <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
               <g transform="matrix(1, 0, 0, 1, 0, 0)">
@@ -53,38 +110,55 @@ const Register = () => {
             </div>
           </div>
           
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Email
-              </label>
-              <input 
-                type="email" 
-                id="email" 
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-cura-primary focus:border-cura-primary dark:bg-slate-800"
-                placeholder="you@example.com"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleRegister)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="you@example.com" 
+                        type="email" 
+                        {...field} 
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Password
-              </label>
-              <input 
-                type="password" 
-                id="password" 
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-cura-primary focus:border-cura-primary dark:bg-slate-800"
-                placeholder="••••••••"
+              
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="••••••••" 
+                        type="password" 
+                        {...field} 
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            
-            <Button 
-              className="w-full bg-cura-primary hover:bg-cura-primary/90"
-              onClick={handleRegister}
-            >
-              Create Account
-            </Button>
-          </div>
+              
+              <Button 
+                type="submit"
+                className="w-full bg-cura-primary hover:bg-cura-primary/90"
+                disabled={isLoading}
+              >
+                {isLoading ? "Creating Account..." : "Create Account"}
+              </Button>
+            </form>
+          </Form>
         </div>
 
         <div className="text-center text-sm">

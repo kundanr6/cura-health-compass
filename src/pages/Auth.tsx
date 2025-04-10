@@ -3,6 +3,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
+import { motion } from 'framer-motion';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -14,7 +15,12 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 gradient-bg">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-lg p-8 space-y-6 border border-gray-100 dark:border-slate-800">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-lg p-8 space-y-6 border border-gray-100 dark:border-slate-800"
+      >
         <div className="text-center space-y-2">
           <div className="flex justify-center mb-4">
             <Logo />
@@ -24,25 +30,29 @@ const Auth = () => {
         </div>
         
         <div className="space-y-4">
-          <Button 
-            variant="secondary" 
-            className="w-full"
-            asChild
-          >
-            <Link to="/login">
-              Login
-            </Link>
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button 
+              variant="secondary" 
+              className="w-full"
+              asChild
+            >
+              <Link to="/login">
+                Login
+              </Link>
+            </Button>
+          </motion.div>
           
-          <Button 
-            variant="outline" 
-            className="w-full"
-            asChild
-          >
-            <Link to="/register">
-              Register
-            </Link>
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              asChild
+            >
+              <Link to="/register">
+                Register
+              </Link>
+            </Button>
+          </motion.div>
           
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -53,19 +63,21 @@ const Auth = () => {
             </div>
           </div>
           
-          <Button 
-            variant="ghost" 
-            className="w-full text-gray-600 dark:text-gray-400"
-            onClick={handleGuestAccess}
-          >
-            Continue as Guest
-          </Button>
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button 
+              variant="ghost" 
+              className="w-full text-gray-600 dark:text-gray-400"
+              onClick={handleGuestAccess}
+            >
+              Continue as Guest
+            </Button>
+          </motion.div>
         </div>
 
         <p className="text-xs text-center text-gray-500 dark:text-gray-400 px-6">
           Sign in or register to save your chat history and profile. Continue as guest to explore without saving anything.
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };

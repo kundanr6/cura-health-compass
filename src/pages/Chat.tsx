@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import MedicalDisclaimer from '@/components/MedicalDisclaimer';
@@ -11,8 +12,17 @@ import { Message } from '@/types/chat';
 import { generateId, getWelcomeMessage, analyzeSymptoms, formatHealthAnalysis } from '@/utils/chatHelpers';
 import { useToast } from '@/components/ui/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
+import { 
+  createChatSession, 
+  saveMessage, 
+  getSessionMessages 
+} from '@/services/chatService';
 
 const Chat = () => {
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('sessionId');
+  const { currentUser } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -23,15 +33,44 @@ const Chat = () => {
   const [templateMessage, setTemplateMessage] = useState(
     "Hi! I'm not feeling well. My symptoms are: [fever], [sore throat], and [fatigue]. It started [2 days ago] and feels [moderate]. What could it be?"
   );
+  const [activeChatSessionId, setActiveChatSessionId] = useState<string | null>(sessionId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
-  // Initialize chat with welcome message
+  // Initialize chat with welcome message or load existing chat
   useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([getWelcomeMessage('en')]);
-    }
-  }, [messages.length]);
+    const initChat = async () => {
+      if (sessionId) {
+        // Load existing chat session
+        setIsLoadingHistory(true);
+        try {
+          const chatMessages = await getSessionMessages(sessionId);
+          if (chatMessages.length > 0) {
+            setMessages(chatMessages);
+            setActiveChatSessionId(sessionId);
+          } else {
+            setMessages([getWelcomeMessage('en')]);
+          }
+        } catch (error) {
+          console.error('Error loading chat history:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load chat history",
+            variant: "destructive",
+          });
+          setMessages([getWelcomeMessage('en')]);
+        } finally {
+          setIsLoadingHistory(false);
+        }
+      } else if (messages.length === 0) {
+        // New chat session
+        setMessages([getWelcomeMessage('en')]);
+      }
+    };
+
+    initChat();
+  }, [sessionId, toast]);
 
   // Scroll to bottom of chat when messages change
   useEffect(() => {
@@ -67,6 +106,23 @@ const Chat = () => {
     }
     
     try {
+      // Create a new chat session if needed (for logged-in users)
+      if (currentUser && !activeChatSessionId) {
+        const newSessionId = await createChatSession(
+          currentUser.uid, 
+          content.length > 30 ? content.substring(0, 30) + '...' : content
+        );
+        
+        if (newSessionId) {
+          setActiveChatSessionId(newSessionId);
+        }
+      }
+      
+      // Save user message (for logged-in users)
+      if (currentUser && activeChatSessionId) {
+        await saveMessage(currentUser.uid, activeChatSessionId, userMessage);
+      }
+      
       // Analyze symptoms
       const analysis = await analyzeSymptoms(content);
       
@@ -91,6 +147,12 @@ const Chat = () => {
         };
         
         setMessages(prev => [...prev, assistantMessage]);
+        
+        // Save assistant message (for logged-in users)
+        if (currentUser && activeChatSessionId) {
+          saveMessage(currentUser.uid, activeChatSessionId, assistantMessage);
+        }
+        
         setIsProcessing(false);
       }, 1000); // Delay to simulate thinking
     } catch (error) {
@@ -164,7 +226,7 @@ const Chat = () => {
       <main className="flex-1 flex flex-col pt-24">
         <div className="flex-1 overflow-y-auto pb-24">
           <div className="max-w-4xl mx-auto pt-4 px-4">
-            {messages.length === 1 && (
+            {messages.length === 1 && !isLoadingHistory && (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -183,19 +245,28 @@ const Chat = () => {
                 </motion.button>
               </motion.div>
             )}
-            <AnimatePresence>
-              {messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ChatMessage message={message} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
+            {isLoadingHistory ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-pulse flex flex-col items-center">
+                  <div className="h-2.5 bg-slate-200 rounded-full dark:bg-slate-700 w-48 mb-4"></div>
+                  <div className="h-2 bg-slate-200 rounded-full dark:bg-slate-700 w-32 mb-2.5"></div>
+                </div>
+              </div>
+            ) : (
+              <AnimatePresence>
+                {messages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ChatMessage message={message} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )}
             {isProcessing && <TypingIndicator />}
             <div ref={messagesEndRef} />
           </div>
