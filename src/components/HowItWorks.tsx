@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
 
 const steps = [
   {
@@ -26,23 +27,25 @@ const steps = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-16 px-4 bg-gray-50 dark:bg-slate-900/50">
+    <section className="py-12 md:py-16 px-4 bg-gray-50 dark:bg-slate-900/50 overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">How Cura Works</h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">How Cura Works</h2>
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-sm sm:text-base">
             Getting health guidance with Cura is simple and straightforward. Here's how it works:
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {steps.map((step, index) => (
             <div key={index} className="relative">
-              <div className="border rounded-lg bg-white dark:bg-slate-800 p-6 h-full">
-                <div className="text-5xl font-bold text-cura-primary/20 mb-4">{step.number}</div>
-                <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
-              </div>
+              <Card className="h-full border rounded-lg bg-white dark:bg-slate-800">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="text-4xl sm:text-5xl font-bold text-cura-primary/20 mb-3 md:mb-4">{step.number}</div>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">{step.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">{step.description}</p>
+                </CardContent>
+              </Card>
               {index < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-1/3 right-0 transform translate-x-1/2 w-8 h-8 z-10">
                   <svg 

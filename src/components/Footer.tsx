@@ -5,7 +5,7 @@ import Logo from './Logo';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="w-full py-6 px-4 sm:px-6 border-t mt-auto bg-white dark:bg-slate-950">
+    <footer className="w-full py-8 md:py-10 px-4 sm:px-6 border-t mt-auto bg-white dark:bg-slate-950">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
             </p>
           </div>
           
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-medium mb-3">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li><Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-cura-primary dark:hover:text-cura-primary">Home</Link></li>
@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
             </ul>
           </div>
           
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="font-medium mb-3">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li><Link to="/disclaimer" className="text-gray-600 dark:text-gray-400 hover:text-cura-primary dark:hover:text-cura-primary">Medical Disclaimer</Link></li>
