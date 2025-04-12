@@ -1,12 +1,21 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/chat');
+    }
+  }, [currentUser, navigate]);
 
   const handleGuestAccess = () => {
     // Set a flag in session storage to indicate guest access was chosen
@@ -27,8 +36,8 @@ const Auth = () => {
           <div className="flex justify-center mb-4">
             <Logo />
           </div>
-          <h1 className="text-2xl font-bold text-cura-dark dark:text-white">Access Cura</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Please sign in or register to continue</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-cura-dark dark:text-white">Access Cura</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Please sign in or register to continue</p>
         </div>
         
         <div className="space-y-4">

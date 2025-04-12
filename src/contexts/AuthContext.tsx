@@ -6,10 +6,10 @@ import {
   signInWithEmailAndPassword, 
   signOut as authSignOut, 
   onAuthStateChanged, 
-  GoogleAuthProvider, 
   signInWithPopup 
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, googleProvider } from '@/lib/firebase';
+import { useToast } from '@/components/ui/use-toast';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -33,29 +33,50 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   const signUp = async (email: string, password: string) => {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    return result.user;
+    try {
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      return result.user;
+    } catch (error: any) {
+      console.error("Error in signUp:", error);
+      throw error;
+    }
   };
 
   const signIn = async (email: string, password: string) => {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    return result.user;
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      return result.user;
+    } catch (error: any) {
+      console.error("Error in signIn:", error);
+      throw error;
+    }
   };
 
   const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
-    return result.user;
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      return result.user;
+    } catch (error: any) {
+      console.error("Error in signInWithGoogle:", error);
+      throw error;
+    }
   };
 
-  const signOut = () => {
-    return authSignOut(auth);
+  const signOut = async () => {
+    try {
+      await authSignOut(auth);
+    } catch (error: any) {
+      console.error("Error in signOut:", error);
+      throw error;
+    }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("Auth state changed:", user ? user.email : "No user");
       setCurrentUser(user);
       setLoading(false);
     });

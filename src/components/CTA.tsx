@@ -55,28 +55,16 @@ const CTA: React.FC = () => {
             transition={{ delay: 0.6, duration: 0.5 }}
             className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 relative z-10"
           >
-            {!currentUser ? (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                <Button 
-                  size="lg" 
-                  variant="secondary" 
-                  className="w-full sm:w-auto bg-white text-cura-primary hover:bg-gray-100 shadow-md text-xs sm:text-sm md:text-base"
-                  onClick={() => navigate('/auth')}
-                >
-                  Register/Login
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
-                <Button 
-                  size="lg" 
-                  className="w-full sm:w-auto bg-cura-primary/90 border border-white/30 text-white hover:bg-cura-primary/80 shadow-md text-xs sm:text-sm md:text-base"
-                  onClick={handleChatClick}
-                >
-                  Start Health Chat
-                </Button>
-              </motion.div>
-            )}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+              <Button 
+                size="lg" 
+                variant={!currentUser ? "secondary" : "default"}
+                className={`w-full sm:w-auto ${!currentUser ? 'bg-white text-cura-primary hover:bg-gray-100' : 'bg-cura-primary/90 border border-white/30 text-white hover:bg-cura-primary/80'} shadow-md text-xs sm:text-sm md:text-base`}
+                onClick={handleChatClick}
+              >
+                {!currentUser ? "Register/Login" : "Start Health Chat"}
+              </Button>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>

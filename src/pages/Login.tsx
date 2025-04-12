@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
@@ -11,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Checkbox } from '@/components/ui/checkbox';
+import { FirebaseError } from 'firebase/app';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -22,9 +22,15 @@ type FormValues = z.infer<typeof formSchema>;
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, currentUser } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/chat');
+    }
+  }, [currentUser, navigate]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -45,10 +51,30 @@ const Login = () => {
       });
       navigate('/chat');
     } catch (error: any) {
+      console.error("Login error:", error);
+      let errorMessage = "Invalid email or password";
+      
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+            errorMessage = "Invalid email or password";
+            break;
+          case 'auth/too-many-requests':
+            errorMessage = "Too many failed login attempts. Please try again later or reset your password";
+            break;
+          case 'auth/user-disabled':
+            errorMessage = "This account has been disabled";
+            break;
+          default:
+            errorMessage = error.message || "An error occurred during login";
+        }
+      }
+      
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: error.message || "Invalid email or password",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -65,10 +91,21 @@ const Login = () => {
       });
       navigate('/chat');
     } catch (error: any) {
+      console.error("Google signin error:", error);
+      
+      let errorMessage = "An error occurred during Google sign-in";
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/popup-closed-by-user') {
+          errorMessage = "Google sign-in was cancelled";
+        } else {
+          errorMessage = error.message || "An error occurred during Google sign-in";
+        }
+      }
+      
       toast({
         variant: "destructive",
         title: "Google sign-in failed",
-        description: error.message || "An error occurred during Google sign-in",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -76,6 +113,7 @@ const Login = () => {
   };
 
   const handleGuestAccess = () => {
+    sessionStorage.setItem('fromAuth', 'true');
     navigate('/chat');
   };
 

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -7,7 +8,7 @@ import ChatInput from '@/components/chat/ChatInput';
 import TypingIndicator from '@/components/chat/TypingIndicator';
 import EmergencyAlert from '@/components/chat/EmergencyAlert';
 import { Message } from '@/types/chat';
-import { generateId, getWelcomeMessage, analyzeSymptoms, formatHealthAnalysis } from '@/utils/chatHelpers';
+import { generateId, getWelcomeMessage } from '@/utils/chatHelpers';
 import { useToast } from '@/components/ui/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +17,40 @@ import {
   saveMessage, 
   getSessionMessages 
 } from '@/services/chatService';
+
+// Temporary local chatbot response function - to be replaced with actual implementation
+const simulateChatbotResponse = async (userMessage: string): Promise<string> => {
+  // This is a placeholder for the local chatbot integration
+  // In a real implementation, this would call your local chatbot API
+  console.log("Processing user message:", userMessage);
+  
+  const keywords = {
+    headache: "Based on your symptoms, you might be experiencing a tension headache. I recommend rest, hydration, and over-the-counter pain medication if needed. If persistent, consult a healthcare provider.",
+    fever: "Fever can be a sign of infection. Rest, stay hydrated, and consider over-the-counter fever reducers. If it persists over 3 days or exceeds 103°F (39.4°C), seek medical attention.",
+    cough: "For a cough, try staying hydrated and using honey (if over 1 year old). Avoid irritants and consider cough drops. If accompanied by difficulty breathing or persists more than a week, consult a doctor.",
+    cold: "For common cold symptoms, rest, hydration, and over-the-counter decongestants can help. If symptoms worsen after a week or are severe, consult a healthcare provider.",
+    covid: "If you suspect COVID-19, self-isolate immediately and get tested. Watch for severe symptoms like difficulty breathing, which require immediate medical attention. Follow local health guidelines.",
+    pain: "For general pain, consider rest, gentle stretching, and over-the-counter pain relievers. Apply ice for acute pain or heat for chronic pain. Consult a doctor for severe or persistent pain.",
+    sleep: "To improve sleep, maintain a regular schedule, create a relaxing bedtime routine, limit screen time before bed, and ensure your sleep environment is comfortable. If insomnia persists, consult a healthcare provider.",
+    stress: "For stress management, try deep breathing exercises, physical activity, mindfulness meditation, and ensuring adequate sleep. Consider limiting caffeine and alcohol. Reach out to a mental health professional if needed.",
+    diet: "A balanced diet includes plenty of fruits, vegetables, whole grains, lean proteins, and healthy fats. Stay hydrated and limit processed foods, added sugars, and excessive salt."
+  };
+  
+  // Simple keyword matching - in a real implementation, this would be more sophisticated
+  const responseParts = [];
+  
+  for (const [keyword, response] of Object.entries(keywords)) {
+    if (userMessage.toLowerCase().includes(keyword)) {
+      responseParts.push(response);
+    }
+  }
+  
+  if (responseParts.length > 0) {
+    return responseParts.join("\n\n");
+  } else {
+    return "I understand you're concerned about your health. Could you provide more specific details about your symptoms or health concerns? This will help me provide more accurate information.";
+  }
+};
 
 const Chat = () => {
   const [searchParams] = useSearchParams();
@@ -51,7 +86,7 @@ const Chat = () => {
     if (!hasAuthenticated) return;
     
     const initChat = async () => {
-      if (sessionId) {
+      if (sessionId && currentUser) {
         setIsLoadingHistory(true);
         try {
           const chatMessages = await getSessionMessages(sessionId);
@@ -78,7 +113,7 @@ const Chat = () => {
     };
 
     initChat();
-  }, [sessionId, toast, hasAuthenticated]);
+  }, [sessionId, currentUser, toast, hasAuthenticated, messages.length]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -127,17 +162,10 @@ const Chat = () => {
         await saveMessage(currentUser.uid, activeChatSessionId, userMessage);
       }
       
-      const analysis = await analyzeSymptoms(content);
+      // Get response from the local chatbot
+      const responseContent = await simulateChatbotResponse(content);
       
-      if (analysis.emergencyLevel === 'high') {
-        setEmergencyAlert({
-          isOpen: true,
-          message: analysis.emergencyMessage || "Your symptoms may indicate a serious condition. Please consult a medical professional immediately."
-        });
-      }
-      
-      const responseContent = formatHealthAnalysis(analysis);
-      
+      // Create assistant message after a small delay for a more natural feel
       setTimeout(() => {
         const assistantMessage: Message = {
           id: generateId(),
@@ -155,7 +183,7 @@ const Chat = () => {
         setIsProcessing(false);
       }, 1000);
     } catch (error) {
-      console.error('Error analyzing symptoms:', error);
+      console.error('Error processing message:', error);
       
       const errorMessage: Message = {
         id: generateId(),

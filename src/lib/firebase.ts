@@ -1,22 +1,29 @@
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Replace these with your actual Firebase project configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  apiKey: "AIzaSyBq9_bDfSEJbfAzhPHwVfDzF-Hio6YvATM",
+  authDomain: "cura-health-ai.firebaseapp.com",
+  projectId: "cura-health-ai",
+  storageBucket: "cura-health-ai.appspot.com",
+  messagingSenderId: "437182098850",
+  appId: "1:437182098850:web:5e3f5ef25d90a7d8d5b8c3",
+  measurementId: "G-JNHEC3NYLP"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
+
+// Configure Google Auth Provider
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+

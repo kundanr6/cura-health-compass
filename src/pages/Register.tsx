@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/Logo';
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { FirebaseError } from 'firebase/app';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -20,9 +21,16 @@ type FormValues = z.infer<typeof formSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp, signInWithGoogle, currentUser } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/chat');
+    }
+  }, [currentUser, navigate]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -40,12 +48,31 @@ const Register = () => {
         title: "Success!",
         description: "Your account has been created",
       });
-      navigate('/');
+      navigate('/chat');
     } catch (error: any) {
+      console.error("Registration error:", error);
+      
+      let errorMessage = "An error occurred during registration";
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = "Email already in use. Please login or use a different email.";
+            break;
+          case 'auth/weak-password':
+            errorMessage = "Password is too weak. Please choose a stronger password.";
+            break;
+          case 'auth/invalid-email':
+            errorMessage = "Invalid email address format.";
+            break;
+          default:
+            errorMessage = error.message || "An error occurred during registration";
+        }
+      }
+      
       toast({
         variant: "destructive",
         title: "Registration failed",
-        description: error.message || "An error occurred during registration",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -60,12 +87,23 @@ const Register = () => {
         title: "Success!",
         description: "Signed in with Google",
       });
-      navigate('/');
+      navigate('/chat');
     } catch (error: any) {
+      console.error("Google signin error:", error);
+      
+      let errorMessage = "An error occurred during Google sign-in";
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/popup-closed-by-user') {
+          errorMessage = "Google sign-in was cancelled";
+        } else {
+          errorMessage = error.message || "An error occurred during Google sign-in";
+        }
+      }
+      
       toast({
         variant: "destructive",
         title: "Google sign-in failed",
-        description: error.message || "An error occurred during Google sign-in",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -79,14 +117,14 @@ const Register = () => {
           <div className="flex justify-center mb-4">
             <Logo />
           </div>
-          <h1 className="text-2xl font-bold text-cura-dark dark:text-white">Create an Account</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Join Cura to manage your health journey</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-cura-dark dark:text-white">Create an Account</h1>
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Join Cura to manage your health journey</p>
         </div>
         
         <div className="space-y-4">
           <Button 
             variant="outline" 
-            className="w-full flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700"
+            className="w-full flex items-center justify-center gap-2 border-gray-300 dark:border-gray-700 text-xs sm:text-sm"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
           >
@@ -117,16 +155,17 @@ const Register = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">Email</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="you@example.com" 
                         type="email" 
                         {...field} 
                         disabled={isLoading}
+                        className="text-xs sm:text-sm h-9 sm:h-10"
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
@@ -136,23 +175,24 @@ const Register = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-xs sm:text-sm">Password</FormLabel>
                     <FormControl>
                       <Input 
                         placeholder="••••••••" 
                         type="password" 
                         {...field} 
                         disabled={isLoading}
+                        className="text-xs sm:text-sm h-9 sm:h-10"
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
               
               <Button 
                 type="submit"
-                className="w-full bg-cura-primary hover:bg-cura-primary/90"
+                className="w-full bg-cura-primary hover:bg-cura-primary/90 text-xs sm:text-sm h-9 sm:h-10"
                 disabled={isLoading}
               >
                 {isLoading ? "Creating Account..." : "Create Account"}
@@ -161,13 +201,17 @@ const Register = () => {
           </Form>
         </div>
 
-        <div className="text-center text-sm">
+        <div className="text-center text-xs sm:text-sm">
           <p className="text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
             <Link to="/login" className="text-cura-primary hover:underline">
               Log in
             </Link>
           </p>
+        </div>
+        
+        <div className="text-center text-xs text-gray-500">
+          <p>By creating an account, you agree to our <Link to="/terms" className="text-cura-primary hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-cura-primary hover:underline">Privacy Policy</Link>.</p>
         </div>
       </div>
     </div>

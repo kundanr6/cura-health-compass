@@ -12,11 +12,11 @@ import {
   updateDoc 
 } from 'firebase/firestore';
 import { Message, ChatSession } from '@/types/chat';
-import { User } from 'firebase/auth';
 
 // Save a new chat message
 export const saveMessage = async (userId: string, sessionId: string, message: Message) => {
   try {
+    console.log(`Saving message for user ${userId} in session ${sessionId}`);
     const messageData = {
       ...message,
       timestamp: Timestamp.fromDate(message.timestamp),
@@ -25,6 +25,7 @@ export const saveMessage = async (userId: string, sessionId: string, message: Me
     };
     
     await addDoc(collection(db, 'messages'), messageData);
+    console.log('Message saved successfully');
     return true;
   } catch (error) {
     console.error('Error saving message:', error);
@@ -35,6 +36,7 @@ export const saveMessage = async (userId: string, sessionId: string, message: Me
 // Create a new chat session
 export const createChatSession = async (userId: string, title: string) => {
   try {
+    console.log(`Creating chat session for user ${userId} with title ${title}`);
     const sessionData = {
       userId,
       title,
@@ -43,6 +45,7 @@ export const createChatSession = async (userId: string, title: string) => {
     };
     
     const docRef = await addDoc(collection(db, 'chatSessions'), sessionData);
+    console.log('Chat session created with ID:', docRef.id);
     return docRef.id;
   } catch (error) {
     console.error('Error creating chat session:', error);
@@ -53,6 +56,7 @@ export const createChatSession = async (userId: string, title: string) => {
 // Get all chat sessions for a user
 export const getChatSessions = async (userId: string): Promise<ChatSession[]> => {
   try {
+    console.log(`Getting chat sessions for user ${userId}`);
     const q = query(
       collection(db, 'chatSessions'),
       where('userId', '==', userId),
@@ -73,6 +77,7 @@ export const getChatSessions = async (userId: string): Promise<ChatSession[]> =>
       });
     });
     
+    console.log(`Found ${sessions.length} sessions`);
     return sessions;
   } catch (error) {
     console.error('Error getting chat sessions:', error);
@@ -83,6 +88,7 @@ export const getChatSessions = async (userId: string): Promise<ChatSession[]> =>
 // Get all messages for a specific chat session
 export const getSessionMessages = async (sessionId: string): Promise<Message[]> => {
   try {
+    console.log(`Getting messages for session ${sessionId}`);
     const q = query(
       collection(db, 'messages'),
       where('sessionId', '==', sessionId),
@@ -102,6 +108,7 @@ export const getSessionMessages = async (sessionId: string): Promise<Message[]> 
       });
     });
     
+    console.log(`Found ${messages.length} messages`);
     return messages;
   } catch (error) {
     console.error('Error getting session messages:', error);
@@ -112,11 +119,13 @@ export const getSessionMessages = async (sessionId: string): Promise<Message[]> 
 // Update a chat session's title
 export const updateSessionTitle = async (sessionId: string, title: string) => {
   try {
+    console.log(`Updating title for session ${sessionId}`);
     const sessionRef = doc(db, 'chatSessions', sessionId);
     await updateDoc(sessionRef, {
       title,
       lastUpdatedAt: Timestamp.now()
     });
+    console.log('Session title updated successfully');
     return true;
   } catch (error) {
     console.error('Error updating session title:', error);
