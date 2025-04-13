@@ -1,0 +1,10 @@
+
+langchain
+langchain-community
+langchain-huggingface
+faiss-cpu
+flask
+flask-cors
+groq
+pymupdf
+sentence-transformers

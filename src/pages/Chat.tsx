@@ -17,40 +17,7 @@ import {
   saveMessage, 
   getSessionMessages 
 } from '@/services/chatService';
-
-// Temporary local chatbot response function - to be replaced with actual implementation
-const simulateChatbotResponse = async (userMessage: string): Promise<string> => {
-  // This is a placeholder for the local chatbot integration
-  // In a real implementation, this would call your local chatbot API
-  console.log("Processing user message:", userMessage);
-  
-  const keywords = {
-    headache: "Based on your symptoms, you might be experiencing a tension headache. I recommend rest, hydration, and over-the-counter pain medication if needed. If persistent, consult a healthcare provider.",
-    fever: "Fever can be a sign of infection. Rest, stay hydrated, and consider over-the-counter fever reducers. If it persists over 3 days or exceeds 103°F (39.4°C), seek medical attention.",
-    cough: "For a cough, try staying hydrated and using honey (if over 1 year old). Avoid irritants and consider cough drops. If accompanied by difficulty breathing or persists more than a week, consult a doctor.",
-    cold: "For common cold symptoms, rest, hydration, and over-the-counter decongestants can help. If symptoms worsen after a week or are severe, consult a healthcare provider.",
-    covid: "If you suspect COVID-19, self-isolate immediately and get tested. Watch for severe symptoms like difficulty breathing, which require immediate medical attention. Follow local health guidelines.",
-    pain: "For general pain, consider rest, gentle stretching, and over-the-counter pain relievers. Apply ice for acute pain or heat for chronic pain. Consult a doctor for severe or persistent pain.",
-    sleep: "To improve sleep, maintain a regular schedule, create a relaxing bedtime routine, limit screen time before bed, and ensure your sleep environment is comfortable. If insomnia persists, consult a healthcare provider.",
-    stress: "For stress management, try deep breathing exercises, physical activity, mindfulness meditation, and ensuring adequate sleep. Consider limiting caffeine and alcohol. Reach out to a mental health professional if needed.",
-    diet: "A balanced diet includes plenty of fruits, vegetables, whole grains, lean proteins, and healthy fats. Stay hydrated and limit processed foods, added sugars, and excessive salt."
-  };
-  
-  // Simple keyword matching - in a real implementation, this would be more sophisticated
-  const responseParts = [];
-  
-  for (const [keyword, response] of Object.entries(keywords)) {
-    if (userMessage.toLowerCase().includes(keyword)) {
-      responseParts.push(response);
-    }
-  }
-  
-  if (responseParts.length > 0) {
-    return responseParts.join("\n\n");
-  } else {
-    return "I understand you're concerned about your health. Could you provide more specific details about your symptoms or health concerns? This will help me provide more accurate information.";
-  }
-};
+import { sendMessageToChatbot, isChatbotAvailable } from '@/services/chatbotService';
 
 const Chat = () => {
   const [searchParams] = useSearchParams();
@@ -68,6 +35,7 @@ const Chat = () => {
   const { toast } = useToast();
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [hasAuthenticated, setHasAuthenticated] = useState(false);
+  const [isChatbotReady, setIsChatbotReady] = useState(false);
 
   useEffect(() => {
     const fromAuth = sessionStorage.getItem('fromAuth') === 'true';
@@ -81,6 +49,24 @@ const Chat = () => {
       }
     }
   }, [currentUser, navigate]);
+
+  // Check if chatbot API is available
+  useEffect(() => {
+    const checkChatbotAvailability = async () => {
+      const available = await isChatbotAvailable();
+      setIsChatbotReady(available);
+      
+      if (!available) {
+        toast({
+          title: "Chatbot Status",
+          description: "The AI chatbot service is currently unavailable. Responses will be limited.",
+          variant: "destructive",
+        });
+      }
+    };
+    
+    checkChatbotAvailability();
+  }, [toast]);
 
   useEffect(() => {
     if (!hasAuthenticated) return;
@@ -162,8 +148,16 @@ const Chat = () => {
         await saveMessage(currentUser.uid, activeChatSessionId, userMessage);
       }
       
-      // Get response from the local chatbot
-      const responseContent = await simulateChatbotResponse(content);
+      // Get response from the chatbot
+      let responseContent = '';
+      
+      if (isChatbotReady) {
+        // Use the local Python chatbot
+        responseContent = await sendMessageToChatbot(content);
+      } else {
+        // Fallback to the simple keyword matching
+        responseContent = await fallbackChatbotResponse(content);
+      }
       
       // Create assistant message after a small delay for a more natural feel
       setTimeout(() => {
@@ -200,6 +194,39 @@ const Chat = () => {
         variant: "destructive",
       });
       setIsProcessing(false);
+    }
+  };
+
+  // Fallback simple chatbot response function when the Python API is unavailable
+  const fallbackChatbotResponse = async (userMessage: string): Promise<string> => {
+    // This is a fallback when the local chatbot API is unavailable
+    console.log("Using fallback chatbot response for:", userMessage);
+    
+    const keywords = {
+      headache: "Based on your symptoms, you might be experiencing a tension headache. I recommend rest, hydration, and over-the-counter pain medication if needed. If persistent, consult a healthcare provider.",
+      fever: "Fever can be a sign of infection. Rest, stay hydrated, and consider over-the-counter fever reducers. If it persists over 3 days or exceeds 103°F (39.4°C), seek medical attention.",
+      cough: "For a cough, try staying hydrated and using honey (if over 1 year old). Avoid irritants and consider cough drops. If accompanied by difficulty breathing or persists more than a week, consult a doctor.",
+      cold: "For common cold symptoms, rest, hydration, and over-the-counter decongestants can help. If symptoms worsen after a week or are severe, consult a healthcare provider.",
+      covid: "If you suspect COVID-19, self-isolate immediately and get tested. Watch for severe symptoms like difficulty breathing, which require immediate medical attention. Follow local health guidelines.",
+      pain: "For general pain, consider rest, gentle stretching, and over-the-counter pain relievers. Apply ice for acute pain or heat for chronic pain. Consult a doctor for severe or persistent pain.",
+      sleep: "To improve sleep, maintain a regular schedule, create a relaxing bedtime routine, limit screen time before bed, and ensure your sleep environment is comfortable. If insomnia persists, consult a healthcare provider.",
+      stress: "For stress management, try deep breathing exercises, physical activity, mindfulness meditation, and ensuring adequate sleep. Consider limiting caffeine and alcohol. Reach out to a mental health professional if needed.",
+      diet: "A balanced diet includes plenty of fruits, vegetables, whole grains, lean proteins, and healthy fats. Stay hydrated and limit processed foods, added sugars, and excessive salt."
+    };
+    
+    // Simple keyword matching - in a real implementation, this would be more sophisticated
+    const responseParts = [];
+    
+    for (const [keyword, response] of Object.entries(keywords)) {
+      if (userMessage.toLowerCase().includes(keyword)) {
+        responseParts.push(response);
+      }
+    }
+    
+    if (responseParts.length > 0) {
+      return responseParts.join("\n\n");
+    } else {
+      return "I understand you're concerned about your health. Could you provide more specific details about your symptoms or health concerns? This will help me provide more accurate information.";
     }
   };
 
@@ -243,6 +270,11 @@ const Chat = () => {
             <div ref={messagesEndRef} />
           </div>
         </div>
+        {!isChatbotReady && (
+          <div className="bg-amber-50 dark:bg-amber-950/30 px-4 py-2 text-center text-amber-800 dark:text-amber-200 text-xs">
+            Running in limited mode. For full AI capabilities, please start the Python chatbot server.
+          </div>
+        )}
         <ChatInput 
           onSendMessage={handleSendMessage} 
           isProcessing={isProcessing}
