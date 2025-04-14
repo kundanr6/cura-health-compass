@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Logo from './Logo';
 import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, User, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
+import MedicalDisclaimer from './MedicalDisclaimer';
 import { 
   Sheet, 
   SheetContent, 
@@ -25,6 +26,7 @@ import {
 const Header: React.FC = () => {
   const { currentUser, signOut } = useAuth();
   const navigate = useNavigate();
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -38,8 +40,13 @@ const Header: React.FC = () => {
     if (!currentUser) {
       navigate('/auth');
     } else {
-      navigate('/chat');
+      setShowDisclaimer(true);
     }
+  };
+
+  const handleDisclaimerAccept = () => {
+    setShowDisclaimer(false);
+    navigate('/chat');
   };
 
   return (
@@ -201,7 +208,7 @@ const Header: React.FC = () => {
                         if (!currentUser) {
                           navigate('/auth');
                         } else {
-                          navigate('/chat');
+                          setShowDisclaimer(true);
                         }
                       }}
                     >
@@ -247,6 +254,16 @@ const Header: React.FC = () => {
           </Sheet>
         </div>
       </div>
+
+      {/* Medical Disclaimer Dialog */}
+      {showDisclaimer && (
+        <MedicalDisclaimer 
+          showAsDialog={true} 
+          onAccept={handleDisclaimerAccept}
+        >
+          <Button variant="outline">Continue to Chat</Button>
+        </MedicalDisclaimer>
+      )}
     </header>
   );
 };
